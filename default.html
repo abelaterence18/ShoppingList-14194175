@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShoppingChart</title>
+
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+<script src="script/jquery-1.11.3.min.js"></script>
+<script src="script/jquery.mobile-1.4.5.min.js"></script>
+
+</head>
+
+<body>
+
+<div data-role="page" class="pageone">
+	<div data-role="main" class="ui-content">
+		<h2>My Shopping Cart</h2>
+		<form class="ui-filterable">
+			<input id="cartSearch" data-type="search" placeholder="Search..."> 
+		</form>
+		<ul data-role="listview" data-filter="true" data-input="#cartSearch" data-autodividers="true" data-inset="true">
+			<li><a href="#">Apple</a></li>
+			<li><a href="#">Apricot</a></li>
+			<li><a href="#">Banana</a></li>
+			<li><a href="#">Bananana</a></li>
+			<li><a href="#">Carrot</a></li>
+			<li><a href="#">Cake</a></li>
+			<li><a href="#">Drop</a></li>
+			<li><a href="#">Testa</a></li>
+		</ul>
+	</div>
+</div>
+
+</body>
+</html>
