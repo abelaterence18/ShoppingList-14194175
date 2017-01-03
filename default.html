@@ -7,29 +7,97 @@
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
 <script src="script/jquery-1.11.3.min.js"></script>
 <script src="script/jquery.mobile-1.4.5.min.js"></script>
+<script src="script/jqm-spinbox.min.js"></script>
 
 </head>
 
 <body>
+<script>
+var chosenItems = {};
 
-<div data-role="page" class="pageone">
+function gotoQuantity(obj)
+{
+	$.mobile.changePage("#quantity");
+	vegetablesChosen = $(obj).text();
+	$("#vegname").text(vegetablesChosen);
+}
+
+function showChosenItems()
+{
+	if ($("#spin").val()!="0") 	saveChoice();
+	$.mobile.changePage("#finalShoppingList");
+	
+	var getList = chosenItems
+	if (localStorage.getItem("shoppingCartList")) 
+		getList = JSON.parse(localStorage.getItem("shoppingCartList"));
+	
+	//$("#allVegetablesChosen").text(JSON.stringify(chosenItems)); 
+	output = "";
+	for (var key in getList) {
+		//output += key + " -> " + chosenItems[key] + "<hr/>"
+	vegData = key + ":" + getList[key];
+	$('<li>').append('<a href="#">' + vegData + '</a>').appendTo('#shoppingList'); 
+	}
+	//$("#allVegetablesChosen").html(output); 
+}
+	
+function backToList()
+{	
+	saveChoice();
+	$.mobile.changePage("#pageone");
+	$("#spin").val(0);
+}	
+	
+function saveChoice()
+{
+	vegetableChosen = $("#vegname").text();
+	quantityChosen = $("#spin").val();
+	chosenItems[vegetableChosen] = quantityChosen;
+	localStorage.setItem("shoppingCartList", JSON.stringify(chosenItems));
+}
+</script>
+	
+<div data-role="page" id="pageone">
 	<div data-role="main" class="ui-content">
-		<h2>My Shopping Cart</h2>
+		<h2>My Shopping Cart</h2> 
+		<div data-role="controlgroup" data-type="horizontal">
+			<button onClick="showChosenItems()">Go to my Shopping Cart</button>	
+		</div>
 		<form class="ui-filterable">
 			<input id="cartSearch" data-type="search" placeholder="Search..."> 
 		</form>
 		<ul data-role="listview" data-filter="true" data-input="#cartSearch" data-autodividers="true" data-inset="true">
-			<li><a href="#">Apple</a></li>
-			<li><a href="#">Apricot</a></li>
-			<li><a href="#">Banana</a></li>
-			<li><a href="#">Bananana</a></li>
-			<li><a href="#">Carrot</a></li>
-			<li><a href="#">Cake</a></li>
-			<li><a href="#">Drop</a></li>
-			<li><a href="#">Testa</a></li>
+			<li><a onClick="gotoQuantity(this)">Apple</a></li>
+			<li><a onClick="gotoQuantity(this)">Apricot</a></li>
+			<li><a onClick="gotoQuantity(this)">Banana</a></li>
+			<li><a onClick="gotoQuantity(this)">Bananana</a></li>
+			<li><a onClick="gotoQuantity(this)">Carrot</a></li>
+			<li><a onClick="gotoQuantity(this)">Cake</a></li>
+			<li><a onClick="gotoQuantity(this)">Drop</a></li>
+			<li><a onClick="gotoQuantity(this)">Testa</a></li>
 		</ul>
 	</div>
 </div>
 
+<div data-role="page" id="quantity">
+	<div data-role="main" class="ui-content">
+		<div id="vegname"></div>
+		<div class="ui-field-contain">
+			<label for="spin">Input Spinner</label>
+			<input type="text" data-role="spinbox" name="spin" id="spin" value="0" min="0" max="10">
+		</div>
+		<button onClick="backToList()">Choose Again</button>
+		<button onClick="showChosenItems()">Show Chosen Items</button>
+	</div>
+</div>
+
+<div data-role="page" id="finalShoppingList">
+	<div data-role="main" class="ui-content">
+		<div id="allVegetablesChosen">
+		<ul data-role="listview" data-inset="true" id="shoppingList">
+		</ul>
+		</div>
+	</div>
+</div>
 </body>
 </html>
