@@ -14,6 +14,8 @@
 <body>
 <script>
 var chosenItems = {};
+	if (localStorage.getItem("shoppingCartList"))
+		chosenItems = JSON.parse(localStorage.getItem("shoppingCartList"));
 
 function gotoQuantity(obj)
 {
@@ -24,29 +26,41 @@ function gotoQuantity(obj)
 
 function showChosenItems()
 {
-	if ($("#spin").val()!="0") 	saveChoice();
+	if ($("#spin").val()!="0") 	
+	{
+		saveChoice();
+		$("#spin").val(0);
+	}
 	$.mobile.changePage("#finalShoppingList");
-	
-	var getList = chosenItems
-	if (localStorage.getItem("shoppingCartList")) 
-		getList = JSON.parse(localStorage.getItem("shoppingCartList"));
+	$('ul#shoppingList').html("");
+	var getList = chosenItems;
+	//if (localStorage.getItem("shoppingCartList")) 
+	//	getList = JSON.parse(localStorage.getItem("shoppingCartList"));
 	
 	//$("#allVegetablesChosen").text(JSON.stringify(chosenItems)); 
 	output = "";
 	for (var key in getList) {
 		//output += key + " -> " + chosenItems[key] + "<hr/>"
 	vegData = key + ":" + getList[key];
-	$('<li>').append('<a href="#">' + vegData + '</a>').appendTo('#shoppingList'); 
+	$('<li>').append('<a href="#" id="' + key + '">' + vegData + '</a><button onClick="removeFromList(this);" id="' + key + '">X</button>').appendTo('#shoppingList'); 
 	}
 	//$("#allVegetablesChosen").html(output); 
 }
 	
 function backToList()
 {	
-	saveChoice();
+	if ($("#spin").val() != 0)
+	{
+		saveChoice();
+		$("#spin").val(0);		
+	}
 	$.mobile.changePage("#pageone");
-	$("#spin").val(0);
 }	
+
+function backToShopping()
+{
+	$.mobile.changePage("#pageone");
+}
 	
 function saveChoice()
 {
@@ -54,6 +68,14 @@ function saveChoice()
 	quantityChosen = $("#spin").val();
 	chosenItems[vegetableChosen] = quantityChosen;
 	localStorage.setItem("shoppingCartList", JSON.stringify(chosenItems));
+}
+	
+function removeFromList(btn)
+{
+	alert(btn.id);
+	delete chosenItems[btn.id];
+	localStorage.setItem("shoppingCartList", JSON.stringify(chosenItems));
+	showChosenItems();
 }
 </script>
 	
@@ -97,6 +119,7 @@ function saveChoice()
 		<ul data-role="listview" data-inset="true" id="shoppingList">
 		</ul>
 		</div>
+		<button onClick="backToShopping()">Continue Shopping</button>
 	</div>
 </div>
 </body>
