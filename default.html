@@ -5,6 +5,7 @@
 <title>ShoppingChart</title>
 
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" href="css/style.css">
 <script src="script/jquery-1.11.3.min.js"></script>
 <script src="script/jquery.mobile-1.4.5.min.js"></script>
 <script src="script/jqm-spinbox.min.js"></script>
@@ -41,10 +42,33 @@ function showChosenItems()
 	output = "";
 	for (var key in getList) {
 		//output += key + " -> " + chosenItems[key] + "<hr/>"
-	vegData = key + ":" + getList[key];
-	$('<li>').append('<a href="#" id="' + key + '">' + vegData + '</a><button onClick="removeFromList(this);" id="' + key + '">X</button>').appendTo('#shoppingList'); 
+	qty = getList[key].split(";");
+	vegData = key + " : " + qty[0];
+	$('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="false" data-theme="c" class="ui-btn ui-li ui-li-has-alt ui-first-child ui-last-child ui-btn-up-c">').append('<label data-corners="true" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-icon="checkbox-off" data-theme="c" data-mini="false" class="ui-checkbox-off ui-btn ui-btn-corner-all ui-fullsize ui-btn-up-c"><span class="ui-btn-inner"><input type="checkbox" onClick="purchase(this);" name="'+key+'" id="'+key+'">'+vegData+'</label><button data-icon="false" class="ui-li-link-alt ui-btn ui-btn-up-c redText" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-iconpos="notext" data-theme="c" onClick="removeFromList(this);" id="'+key+'">X</button>').appendTo('#shoppingList'); 
 	}
 	//$("#allVegetablesChosen").html(output); 
+	markAsBought();
+}
+	
+function purchase(chk)
+{
+	var qtySplit = chosenItems[chk.id].split(";")[0];
+	chosenItems[chk.id] = qtySplit + ";true";
+	$(chk).attr("disabled", true);
+	localStorage.setItem("shoppingCartList", JSON.stringify(chosenItems));
+}
+	
+function markAsBought()
+{
+	for (var key in chosenItems)
+	{
+		vegBought = chosenItems[key].split(";")[1];
+		if (vegBought == "true")
+		{
+			$("input:checkbox#"+key).attr("disabled", true);
+			$("input:checkbox#"+key).attr("checked", true);
+		}
+	}
 }
 	
 function backToList()
@@ -66,13 +90,12 @@ function saveChoice()
 {
 	vegetableChosen = $("#vegname").text();
 	quantityChosen = $("#spin").val();
-	chosenItems[vegetableChosen] = quantityChosen;
+	chosenItems[vegetableChosen] = quantityChosen + ";false";
 	localStorage.setItem("shoppingCartList", JSON.stringify(chosenItems));
 }
 	
 function removeFromList(btn)
 {
-	alert(btn.id);
 	delete chosenItems[btn.id];
 	localStorage.setItem("shoppingCartList", JSON.stringify(chosenItems));
 	showChosenItems();
@@ -125,8 +148,10 @@ function removeFromList(btn)
 <div data-role="page" id="finalShoppingList">
 	<div data-role="main" class="ui-content">
 		<div id="allVegetablesChosen">
-		<ul data-role="listview" data-inset="true" id="shoppingList">
-		</ul>
+		<div class="ui-field-contain">
+			<ul data-role="listview" data-inset="true" id="shoppingList">
+			</ul>
+		</div>
 		</div>
 		<button onClick="backToShopping()">Continue Shopping</button>
 	</div>
